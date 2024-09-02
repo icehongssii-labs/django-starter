@@ -4,6 +4,7 @@ from django.shortcuts import render, get_object_or_404, redirect
 from .forms import *
 from a_messageboard.models import MessageBoard
 from django.core.mail import EmailMessage
+import threading
 
 @login_required
 def messageboard_view(request):
@@ -42,6 +43,13 @@ def send_email(message):
     
     for subscriber in subscribers: 
         subject = f'New Message from {message.author.profile.name}'
-        body = f'{message.author.profile.name}: {message.body}\n\nRegards from\nMy Message Board'
-        email = EmailMessage(subject, body, to=["icehongssii@gmail.com"])
-        email.send()
+        body = f'{message.author.profile.name}: {message.body}'
+        # email = EmailMessage(subject, body, to=[subscriber.email])
+        # email.send()
+        email_thread = threading.Thread(target=send_email_thread, args=(subject, body, subscriber))
+        email_thread.start()
+
+def send_email_thread(subject, body, subscriber):        
+    email = EmailMessage(subject, body, to=[subscriber.email])
+    email.send()
+        
