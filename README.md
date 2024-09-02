@@ -19,27 +19,41 @@ python3 -m venv venv
 source venv/bin/activate
 ```
 
+###### mysql settings
+
+`localhost`는 현재 장고 어플리케이션이랑 같은 로컬 컴퓨터를 가르킬거고
+`127.0.0.1`dms
+
+```
+DATABASES = {
+    'default': {
+        'ENGINE': 'django.db.backends.mysql',
+        'NAME': 'message', 
+        'USER': 'root',
+        'PASSWORD': 'root',
+        'HOST': '127.0.0.1',
+        'PORT': '3306'
+    }
+}
+
+```
+
 ###### # Windows
 ```
-pip install virtualenv 
-virtualenv venv 
-venv\Scripts\activate.bat 
-```
-
-<br>
-
-#### - Install dependencies
-```
+python -m venv venv
+source venv/bin/activa
 pip install --upgrade pip
-pip install -r requirements.txt
+pip  install -r requirments.txt
+python manage.py migrate
 ```
 
 <br>
 
 #### - Migrate to database
 ```
-python manage.py migrate
+python manage.py migrate # 최초
 python manage.py createsuperuser
+python manage.py makemigrations # 변경작업후 
 ```
 
 <br>
@@ -58,5 +72,3 @@ from django.core.management.utils import get_random_secret_key
 print(get_random_secret_key())
 exit()
 ```
-
-
