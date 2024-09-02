@@ -15,3 +15,8 @@ services:
     # volumes:
     #   - .init.sql:/docker-entrypoint-initdb.d/init.sql
 
+  redis:
+    image: redis:alpine
+    ports:
+      - 6379:6379
+
