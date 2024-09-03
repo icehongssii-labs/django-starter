@@ -1,8 +1,8 @@
 version: '3.8'
 
 services:
-
-  db:
+  mysql:
+    container_name: mysql
     image: mysql:8.0
     restart: always
     ports:
@@ -12,11 +12,29 @@ services:
       MYSQL_DATABASE: message
       # MYSQL_USER: ${MYSQL_USER}
       # MYSQL_PASSWORD: ${MYSQL_PASSWORD}
-    # volumes:
-    #   - .init.sql:/docker-entrypoint-initdb.d/init.sql
+    volumes:
+      - .init.sql:/docker-entrypoint-initdb.d/init.sql
 
   redis:
+    container_name: redis
     image: redis:alpine
     ports:
       - 6379:6379
-
+  django:
+    container_name: django
+    build: .
+    ports:
+      - 8000:8000
+    command:
+      - bash
+      - -c
+      - |
+        /app/wait-for-it.sh mysql:5432 -t 15
+        /app/init.sh
+    environment:
+      - name=value
+    depends_on:
+      - mysql
+      - redis
+    volumes:
+      - /Users/douner/ws/django-starter:/app

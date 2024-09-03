@@ -1,15 +1,20 @@
-FROM python:3.7.7
+FROM python:3.11-slim
 
-RUN pip3 install django
+COPY requirements.txt ./
+# install mysqlclient
+RUN apt-get update && apt-get install -y python3-dev default-libmysqlclient-dev build-essential curl pkg-config default-mysql-client
+
+RUN pip install --disable-pip-version-check -r requirements.txt
 
 WORKDIR /app
 
 COPY . .
 
 WORKDIR /app
-# manage.py를 실행할 수 있는 디렉토리로 이동합니다.
 
-CMD ["python3", "manage.py", "runserver", "0.0.0.0:8000"]
-# 이동한 디렉토리에서 django를 가동시켜주는 코드를 작성합니다. 여기서 port는 8000로 실행시키겠습니다.
 
+COPY wait-for-it.sh init.sh ./
+RUN chmod +x wait-for-it.sh init.sh
+
+# Expose the port the app runs on
 EXPOSE 8000

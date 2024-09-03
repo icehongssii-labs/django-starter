@@ -98,7 +98,7 @@ DATABASES = {
         'NAME': 'message', 
         'USER': 'root',
         'PASSWORD': 'root',
-        'HOST': '127.0.0.1',
+        'HOST': 'mysql',
         'PORT': '3306'
     }
 }

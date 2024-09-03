@@ -3,3 +3,11 @@ pillow
 django-cleanup
 django-allauth
 django-htmx
+redis
+mysqlclient
+flower
+django-celery-beat
+django-celery-results
+celery
+requests
+mongoengine

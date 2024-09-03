@@ -5,6 +5,7 @@ from .forms import *
 from a_messageboard.models import MessageBoard
 from django.core.mail import EmailMessage
 from .tasks import *
+import threading
 
 
 @login_required
@@ -40,9 +41,24 @@ def subscribe(request):
 
 def send_email(message):
     messageboard = message.messageboard 
-    subscribers = messageboard.subscribers.all()
-    
+    subscribers = messageboard.subscribers.all()    
     for subscriber in subscribers: 
         subject = f'New Message from {message.author.profile.name}'
-        body = f'{message.author.profile.name}: {message.body}\n\nRegards from\nMy Message Board'
-        send_email_task.delay(subject, body, subscriber.email)
+        body = f'{message.author.profile.name}: {message.body}'
+        
+        email_thread = threading.Thread(target=send_email_thread, args=(subject, body, subscriber))
+        email_thread.start()
+
+def send_email_thread(subject, body, subscriber):        
+    email = EmailMessage(subject, body, to=[subscriber.email])
+    email.send()
+
+
+# def send_email(message):
+#     messageboard = message.messageboard 
+#     subscribers = messageboard.subscribers.all()
+    
+#     for subscriber in subscribers: 
+#         subject = f'New Message from {message.author.profile.name}'
+#         body = f'{message.author.profile.name}: {message.body}\n\nRegards from\nMy Message Board'
+#         send_email_task.delay(subject, body, subscriber.email)
